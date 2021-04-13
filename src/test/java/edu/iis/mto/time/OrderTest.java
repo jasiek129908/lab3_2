@@ -48,7 +48,7 @@ class OrderTest {
         when(clockMock.instant()).thenReturn(instantOfSubmission).thenReturn(instantOfConfirmation);
 
         order.submit();
-        Assertions.assertDoesNotThrow(()->order.confirm());
+        Assertions.assertDoesNotThrow(() -> order.confirm());
     }
 
     @Test
@@ -61,8 +61,9 @@ class OrderTest {
 
         order.submit();
         order.confirm();
-        assertEquals(Order.State.CONFIRMED,order.getOrderState());
+        assertEquals(Order.State.CONFIRMED, order.getOrderState());
     }
+
     @Test
     void TestOrderStateShouldBeCanceled() {
         Instant instantOfSubmission = Instant.parse("2021-04-30T00:00:00.00Z");
@@ -72,8 +73,7 @@ class OrderTest {
         when(clockMock.instant()).thenReturn(instantOfSubmission).thenReturn(instantOfConfirmation);
 
         order.submit();
-        assertThrows(OrderExpiredException.class,()->order.confirm());
-        assertEquals(Order.State.CANCELLED,order.getOrderState());
+        assertThrows(OrderExpiredException.class, () -> order.confirm());
+        assertEquals(Order.State.CANCELLED, order.getOrderState());
     }
-
 }
