@@ -1,19 +1,40 @@
 package edu.iis.mto.time;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.Mockito.when;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
 
+import java.time.Clock;
+import java.time.Instant;
+import java.time.ZoneId;
+import java.time.temporal.ChronoUnit;
 
+@ExtendWith(MockitoExtension.class)
 class OrderTest {
 
-    @BeforeEach
-    void setUp() throws Exception {}
+    @Mock
+    private Clock clockMock;
+    private Order order;
 
-    @Test
-    void test() {
-        fail("Not yet implemented");
+    @BeforeEach
+    void setUp() throws Exception {
+        order = new Order(clockMock);
     }
 
+    @Test
+    void TestExpiryOfTheOrder() {
+        Instant instantOfSubmission = Instant.parse("2021-04-30T00:00:00.00Z");
+        Instant instantOfConfirmation = instantOfSubmission.plus(Order.VALID_PERIOD_HOURS + 1, ChronoUnit.HOURS);
+
+        when(clockMock.getZone()).thenReturn(ZoneId.systemDefault());
+        when(clockMock.instant()).thenReturn(instantOfSubmission).thenReturn(instantOfConfirmation);
+
+        order.submit();
+        assertThrows(OrderExpiredException.class, () -> order.confirm());
+    }
 }
