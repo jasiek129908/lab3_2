@@ -16,6 +16,7 @@ public class Order {
 
     public Order() {
         orderState = State.CREATED;
+        this.clock=Clock.systemDefaultZone();
     }
 
     public Order(Clock clock) {
